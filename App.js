@@ -1,13 +1,58 @@
-import React from "react";
-import { StyleSheet, Text, Image, View } from "react-native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  Alert,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import Header from "./components/Header";
+import ListItem from "./components/ListItem";
+import AddItem from "./components/AddItem";
+import { nanoid } from "nanoid/non-secure";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 export default function App() {
+  const [items, setItems] = useState([]);
+
+  const clearItems = () => {
+    setItems([]);
+  };
+
+  const deleteItem = (id) => {
+    setItems((prevItems) => {
+      return prevItems.filter((item) => item.id !== id);
+    });
+  };
+
+  const addItem = (text) => {
+    if (!text) {
+      Alert.alert("Error", "Please enter an item !");
+    } else {
+      setItems((prevItems) => {
+        return [...prevItems, { id: nanoid(), text: text }];
+      });
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Hello</Text>
-      <Image
-        style={styles.img}
-        source={{ uri: "https://randomuser.me/api/portraits/men/1.jpg" }}
+      <Header title="Shopping List" />
+
+      <TouchableOpacity style={styles.btn} onPress={clearItems}>
+        <Text style={styles.btnText}>
+          <Icon name="plus" size={20} /> Clear Items
+        </Text>
+      </TouchableOpacity>
+
+      <AddItem addItem={addItem} />
+
+      <FlatList
+        data={items}
+        renderItem={({ item }) => (
+          <ListItem item={item} deleteItem={deleteItem} />
+        )}
       />
     </View>
   );
@@ -16,17 +61,16 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    paddingTop: 60,
   },
-  text: {
+  btn: {
+    backgroundColor: "#c2bad8",
+    padding: 9,
+    margin: 5,
+  },
+  btnText: {
     color: "darkslateblue",
-    fontSize: 24,
-  },
-  img: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    fontSize: 20,
+    textAlign: "center",
   },
 });
