@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -12,9 +12,21 @@ import ListItem from "./components/ListItem";
 import AddItem from "./components/AddItem";
 import { nanoid } from "nanoid/non-secure";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { storeData, loadDataAsync } from "./util/storage";
+
+const storedKey = "@AwesomeList:";
 
 export default function App() {
   const [items, setItems] = useState([]);
+
+  useEffect(
+    () => {
+      loadDataAsync(storedKey, alert, setItems);
+    },
+    [
+      /* load once */
+    ]
+  );
 
   const clearItems = () => {
     setItems([]);
@@ -35,6 +47,10 @@ export default function App() {
       });
     }
   };
+
+  useEffect(() => {
+    storeData(storedKey, items, alert);
+  }, [items]);
 
   return (
     <View style={styles.container}>
