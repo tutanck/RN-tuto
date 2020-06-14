@@ -19,9 +19,11 @@ const storedKey = "@AwesomeList:";
 export default function App() {
   const [items, setItems] = useState([]);
 
+  const loadItems = (data) => (data != null ? data : []);
+
   useEffect(
     () => {
-      loadDataAsync(storedKey, alert, setItems);
+      loadDataAsync(storedKey, alert, loadItems);
     },
     [
       /* load once */
